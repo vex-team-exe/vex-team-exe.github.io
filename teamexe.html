@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team .exe — VEX Robotics</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #f4f2ee;
+    --accent: #00e5ff;
+    --accent2: #ff3c3c;
+    --mid: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --mono: 'Space Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: left 0.12s ease-out, top 0.12s ease-out, width 0.2s, height 0.2s;
+    opacity: 0.6;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.5rem 4rem;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: rgba(244,242,238,0.5);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 0 4rem 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #0a0a0a 0%, #0d1a1f 50%, #0a0a0a 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(0,229,255,0.07) 0%, transparent 70%);
+    top: -100px; right: -100px;
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+  .hero-title {
+    font-size: clamp(4rem, 10vw, 9rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-title .accent { color: var(--accent); }
+  .hero-title .stroke {
+    -webkit-text-stroke: 1.5px var(--white);
+    color: transparent;
+  }
+  .hero-sub {
+    margin-top: 2.5rem;
+    font-size: 1.05rem;
+    color: rgba(244,242,238,0.55);
+    max-width: 520px;
+    line-height: 1.7;
+    position: relative; z-index: 1;
+  }
+  .hero-cta {
+    margin-top: 3rem;
+    display: flex; gap: 1.5rem; align-items: center;
+    position: relative; z-index: 1;
+  }
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--accent);
+    border: none;
+    padding: 1rem 2rem;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-block;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,255,0.3); }
+  .btn-ghost {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(244,242,238,0.5);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(244,242,238,0.2);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--white); border-color: var(--white); }
+  .hero-scroll-hint {
+    position: absolute; bottom: 2rem; right: 4rem;
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(244,242,238,0.25);
+    writing-mode: vertical-rl;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-scroll-hint::after {
+    content: '';
+    width: 1px; height: 60px;
+    background: linear-gradient(to bottom, rgba(244,242,238,0.25), transparent);
+  }
+
+  /* SECTION SHARED */
+  section { padding: 8rem 4rem; }
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .section-label::before { content: '//'; color: rgba(0,229,255,0.4); }
+  .section-title {
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  /* STORY */
+  #story { background: var(--black); }
+  .story-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .story-img-placeholder {
+    aspect-ratio: 4/3;
+    background: var(--mid);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1rem;
+    color: rgba(244,242,238,0.2);
+    font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    position: relative;
+    overflow: hidden;
+  }
+  .story-img-placeholder::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,229,255,0.03) 0%, transparent 60%);
+  }
+  .img-icon { font-size: 2rem; opacity: 0.3; }
+  .story-text { display: flex; flex-direction: column; gap: 1.5rem; }
+  .story-text p {
+    color: rgba(244,242,238,0.65);
+    line-height: 1.85;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+  .story-text p strong { color: var(--white); font-weight: 700; }
+  .stat-row {
+    display: flex; gap: 2rem; margin-top: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat { display: flex; flex-direction: column; gap: 0.3rem; }
+  .stat-num {
+    font-size: 2.2rem; font-weight: 800;
+    color: var(--accent); line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(244,242,238,0.4);
+  }
+
+  /* ACHIEVEMENTS */
+  #achievements {
+    background: var(--mid);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .achievements-inner { max-width: 1200px; margin: 0 auto; }
+  .achievements-header { margin-bottom: 4rem; }
+  .awards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    background: var(--border);
+  }
+  .award-card {
+    background: var(--mid);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .award-card:hover { background: #222; }
+  .award-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .award-card:hover::before { transform: scaleX(1); }
+  .award-badge {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .award-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .award-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+  }
+  .award-card p {
+    font-size: 0.88rem;
+    color: rgba(244,242,238,0.45);
+    line-height: 1.7;
+  }
+  .award-highlight { border-left: 2px solid var(--accent2); }
+  .award-highlight .award-badge { color: var(--accent2); }
+  .award-highlight .award-badge::before { background: var(--accent2); }
+
+  /* SEASON TIMELINE */
+  #season { background: var(--black); }
+  .season-inner { max-width: 1000px; margin: 0 auto; }
+  .season-header { margin-bottom: 4rem; }
+  .timeline {
+    display: flex;
+    gap: 0;
+    position: relative;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 2.5rem; left: 0; right: 0;
+    height: 1px;
+    background: var(--border);
+  }
+  .timeline-step {
+    flex: 1;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 1.5rem;
+    padding: 0 1.5rem;
+    position: relative;
+    text-align: center;
+  }
+  .step-dot {
+    width: 5rem; height: 5rem;
+    border: 1px solid var(--border);
+    background: var(--mid);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.7rem;
+    color: rgba(244,242,238,0.3);
+    position: relative; z-index: 1;
+    transition: border-color 0.3s, color 0.3s, background 0.3s;
+  }
+  .timeline-step.active .step-dot {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,229,255,0.05);
+    box-shadow: 0 0 30px rgba(0,229,255,0.15);
+  }
+  .timeline-step.target .step-dot {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    background: rgba(255,60,60,0.05);
+  }
+  .step-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+  .step-sub {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: rgba(244,242,238,0.35);
+    letter-spacing: 0.1em;
+  }
+  .step-badge {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    padding: 0.3rem 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .badge-active { background: rgba(0,229,255,0.1); color: var(--accent); }
+  .badge-target { background: rgba(255,60,60,0.1); color: var(--accent2); }
+
+  /* TEAM */
+  #team { background: var(--mid); border-top: 1px solid var(--border); }
+  .team-inner { max-width: 1200px; margin: 0 auto; }
+  .team-header { margin-bottom: 4rem; }
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+  }
+  .member-card {
+    background: var(--mid);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .member-card:hover { background: #1f1f1f; }
+  .member-img {
+    aspect-ratio: 1;
+    background: #141414;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.75rem;
+    color: rgba(244,242,238,0.15);
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    position: relative;
+    overflow: hidden;
+  }
+  .member-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 50%);
+  }
+  .member-info { padding: 1.5rem; }
+  .member-name { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; }
+  .member-role {
+    font-family: var(--mono); font-size: 0.65rem;
+    color: var(--accent); letter-spacing: 0.12em;
+    text-transform: uppercase; margin-bottom: 0.8rem;
+  }
+  .member-bio {
+    font-size: 0.82rem;
+    color: rgba(244,242,238,0.4);
+    line-height: 1.7;
+  }
+
+  /* GALLERY */
+  #gallery { background: var(--black); }
+  .gallery-inner { max-width: 1200px; margin: 0 auto; }
+  .gallery-header { margin-bottom: 3rem; }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 2px;
+    background: var(--border);
+  }
+  .gallery-item {
+    background: #111;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 0.5rem;
+    color: rgba(244,242,238,0.15);
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    aspect-ratio: 4/3;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .gallery-item:hover { background: #161616; }
+  .gallery-item.tall { grid-row: span 2; aspect-ratio: unset; }
+  .gallery-item::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,229,255,0.02) 0%, transparent 60%);
+  }
+
+  /* SPONSORS */
+  #sponsors { background: var(--mid); border-top: 1px solid var(--border); }
+  .sponsors-inner { max-width: 1000px; margin: 0 auto; text-align: center; }
+  .sponsors-inner .section-label { justify-content: center; }
+  .sponsors-inner .section-title { margin-bottom: 1rem; }
+  .sponsors-subtitle {
+    color: rgba(244,242,238,0.4);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 550px; margin: 0 auto 4rem;
+  }
+  .sponsor-tiers { display: flex; flex-direction: column; gap: 3rem; }
+  .tier-label {
+    font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(244,242,238,0.25);
+    margin-bottom: 1.5rem;
+  }
+  .sponsor-row {
+    display: flex; gap: 1.5rem;
+    justify-content: center; align-items: center;
+    flex-wrap: wrap;
+  }
+  .sponsor-slot {
+    background: rgba(255,255,255,0.03);
+    border: 1px dashed rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 0.65rem;
+    color: rgba(244,242,238,0.2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .sponsor-slot:hover {
+    border-color: rgba(0,229,255,0.3);
+    background: rgba(0,229,255,0.03);
+  }
+  .sponsor-slot.large { width: 280px; height: 100px; }
+  .sponsor-slot.medium { width: 180px; height: 70px; }
+
+  /* CONTACT */
+  #contact { background: var(--black); }
+  .contact-inner {
+    max-width: 700px; margin: 0 auto;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 1.5rem;
+  }
+  .contact-inner .section-label { justify-content: center; }
+  .contact-inner .section-title { margin-bottom: 0.5rem; }
+  .contact-inner p {
+    color: rgba(244,242,238,0.5);
+    line-height: 1.8; font-size: 0.95rem;
+  }
+  .contact-email {
+    font-family: var(--mono); font-size: 1.1rem;
+    color: var(--accent); margin: 1rem 0;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0,229,255,0.3);
+    padding-bottom: 3px;
+    transition: border-color 0.2s;
+  }
+  .contact-email:hover { border-color: var(--accent); }
+  .socials {
+    display: flex; gap: 1.5rem; margin-top: 1rem;
+  }
+  .social-link {
+    font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(244,242,238,0.35);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    padding: 0.7rem 1.3rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .social-link:hover { color: var(--white); border-color: rgba(255,255,255,0.25); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); }
+  .footer-note {
+    font-family: var(--mono); font-size: 0.62rem;
+    color: rgba(244,242,238,0.2); letter-spacing: 0.1em;
+  }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible { opacity: 1; transform: none; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    #hero { padding: 0 2rem 4rem; }
+    section { padding: 5rem 2rem; }
+    .story-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .awards-grid { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-item.tall { grid-row: span 1; aspect-ratio: 4/3; }
+    .timeline { flex-direction: column; gap: 3rem; }
+    .timeline::before { display: none; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <div class="nav-logo">.exe_</div>
+  <ul class="nav-links">
+    <li><a href="#story">Story</a></li>
+    <li><a href="#achievements">Achievements</a></li>
+    <li><a href="#season">Season</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#sponsors">Partner</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-tag">VEX Robotics — Canterbury, Kent</div>
+  <h1 class="hero-title">
+    <span class="accent">.exe</span><br>
+    <span class="stroke">Robotics</span>
+  </h1>
+  <p class="hero-sub">An independent student robotics team from Canterbury, competing to represent the UK at the VEX Robotics World Championship 2027.</p>
+  <div class="hero-cta">
+    <a href="#sponsors" class="btn-primary">Partner With Us</a>
+    <a href="#story" class="btn-ghost">Our Story →</a>
+  </div>
+  <div class="hero-scroll-hint">Scroll</div>
+</section>
+
+<!-- STORY -->
+<section id="story">
+  <div class="story-inner">
+    <div class="story-img-placeholder fade-up">
+      <div class="img-icon">⬡</div>
+      <span>TEAM PHOTO</span>
+    </div>
+    <div class="story-text fade-up">
+      <div class="section-label">Our Story</div>
+      <h2 class="section-title">Built from scratch. On our own terms.</h2>
+      <p>For five years, our members competed under the banner of Simon Langton Grammar School for Boys, accumulating awards at regional and national level and placing <strong>top 5 in the UK</strong> on multiple occasions.</p>
+      <p>This season, we made the decision to go independent. No school affiliation. No institutional safety net. Just six people who care deeply about engineering, problem-solving, and competing at the highest level — taking full ownership of their own journey.</p>
+      <p>We are Team .exe: <strong>self-funded, self-directed, and entirely committed</strong> to qualifying for the VEX Robotics World Championship.</p>
+      <div class="stat-row">
+        <div class="stat">
+          <span class="stat-num">5+</span>
+          <span class="stat-label">Years Competing</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">6</span>
+          <span class="stat-label">Team Members</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">Top 5</span>
+          <span class="stat-label">UK Ranking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENTS -->
+<section id="achievements">
+  <div class="achievements-inner">
+    <div class="achievements-header fade-up">
+      <div class="section-label">Track Record</div>
+      <h2 class="section-title">Awards & Achievements</h2>
+    </div>
+    <div class="awards-grid">
+      <div class="award-card award-highlight fade-up">
+        <div class="award-badge">Most Prestigious</div>
+        <h3>Regional Excellence Award</h3>
+        <p>The highest judged award in VEX, combining a top skills score, exemplary Engineering Notebook, and elite tournament performance.</p>
+      </div>
+      <div class="award-card fade-up">
+        <div class="award-badge">×3 Won</div>
+        <h3>Tournament Champion</h3>
+        <p>Awarded for winning all stages of a regional tournament — won three times across our history.</p>
+      </div>
+      <div class="award-card fade-up">
+        <div class="award-badge">National</div>
+        <h3>Build Award</h3>
+        <p>Recognising a robust, well-engineered robot built to perform under the rigours of national competition.</p>
+      </div>
+      <div class="award-card fade-up">
+        <div class="award-badge">National</div>
+        <h3>Create Award</h3>
+        <p>For a thoroughly researched design process that draws on real-world engineering principles and examples.</p>
+      </div>
+      <div class="award-card fade-up">
+        <div class="award-badge">Regional</div>
+        <h3>Design Award</h3>
+        <p>Awarded for a high-performing robot paired with an impressive Engineering Notebook documenting the design journey.</p>
+      </div>
+      <div class="award-card fade-up">
+        <div class="award-badge">Regional</div>
+        <h3>Innovate Award</h3>
+        <p>For a uniquely creative and technically impressive robot design that stood out among the field.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEASON TIMELINE -->
+<section id="season">
+  <div class="season-inner">
+    <div class="season-header fade-up">
+      <div class="section-label">2026–2027 Season</div>
+      <h2 class="section-title">The Road to Worlds</h2>
+    </div>
+    <div class="timeline fade-up">
+      <div class="timeline-step active">
+        <div class="step-dot">APR</div>
+        <div class="step-title">Game Release</div>
+        <div class="step-sub">April 2026</div>
+        <span class="step-badge badge-active">Season Start</span>
+      </div>
+      <div class="timeline-step active">
+        <div class="step-dot">↓</div>
+        <div class="step-title">Build Season</div>
+        <div class="step-sub">Apr–Nov 2026</div>
+        <span class="step-badge badge-active">In Progress</span>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">REG</div>
+        <div class="step-title">Regional Events</div>
+        <div class="step-sub">Nov–Dec 2026</div>
+      </div>
+      <div class="timeline-step">
+        <div class="step-dot">NAT</div>
+        <div class="step-title">UK Nationals</div>
+        <div class="step-sub">Early 2027</div>
+      </div>
+      <div class="timeline-step target">
+        <div class="step-dot">WLD</div>
+        <div class="step-title">World Championship</div>
+        <div class="step-sub">April 2027</div>
+        <span class="step-badge badge-target">Our Target</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="team-inner">
+    <div class="team-header fade-up">
+      <div class="section-label">The People</div>
+      <h2 class="section-title">Meet the Team</h2>
+    </div>
+    <div class="team-grid">
+      <!-- Member 1 -->
+      <div class="member-card fade-up">
+        <div class="member-img">
+          <div class="img-icon">◻</div>
+          <span>PHOTO</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">[Name]</div>
+          <div class="member-role">[Role]</div>
+          <div class="member-bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Short bio about this member's skills and background.</div>
+        </div>
+      </div>
+      <!-- Member 2 -->
+      <div class="member-card fade-up">
+        <div class="member-img">
+          <div class="img-icon">◻</div>
+          <span>PHOTO</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">[Name]</div>
+          <div class="member-role">[Role]</div>
+          <div class="member-bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Short bio about this member's skills and background.</div>
+        </div>
+      </div>
+      <!-- Member 3 -->
+      <div class="member-card fade-up">
+        <div class="member-img">
+          <div class="img-icon">◻</div>
+          <span>PHOTO</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">[Name]</div>
+          <div class="member-role">[Role]</div>
+          <div class="member-bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Short bio about this member's skills and background.</div>
+        </div>
+      </div>
+      <!-- Member 4 -->
+      <div class="member-card fade-up">
+        <div class="member-img">
+          <div class="img-icon">◻</div>
+          <span>PHOTO</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">[Name]</div>
+          <div class="member-role">[Role]</div>
+          <div class="member-bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Short bio about this member's skills and background.</div>
+        </div>
+      </div>
+      <!-- Member 5 -->
+      <div class="member-card fade-up">
+        <div class="member-img">
+          <div class="img-icon">◻</div>
+          <span>PHOTO</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">[Name]</div>
+          <div class="member-role">[Role]</div>
+          <div class="member-bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Short bio about this member's skills and background.</div>
+        </div>
+      </div>
+      <!-- Member 6 -->
+      <div class="member-card fade-up">
+        <div class="member-img">
+          <div class="img-icon">◻</div>
+          <span>PHOTO</span>
+        </div>
+        <div class="member-info">
+          <div class="member-name">[Name]</div>
+          <div class="member-role">[Role]</div>
+          <div class="member-bio">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Short bio about this member's skills and background.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-inner">
+    <div class="gallery-header fade-up">
+      <div class="section-label">The Build</div>
+      <h2 class="section-title">Robot & Pit Gallery</h2>
+    </div>
+    <div class="gallery-grid fade-up">
+      <div class="gallery-item tall">
+        <div class="img-icon">⬡</div>
+        <span>ROBOT HERO SHOT</span>
+      </div>
+      <div class="gallery-item">
+        <div class="img-icon">◻</div>
+        <span>PIT DISPLAY</span>
+      </div>
+      <div class="gallery-item">
+        <div class="img-icon">◻</div>
+        <span>TEAM AT COMP</span>
+      </div>
+      <div class="gallery-item">
+        <div class="img-icon">◻</div>
+        <span>ROBOT DETAIL</span>
+      </div>
+      <div class="gallery-item">
+        <div class="img-icon">◻</div>
+        <span>MATCH ACTION</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPONSORS -->
+<section id="sponsors">
+  <div class="sponsors-inner">
+    <div class="section-label">Partnership</div>
+    <h2 class="section-title fade-up">Partner With Us</h2>
+    <p class="sponsors-subtitle fade-up">We are actively seeking corporate partners for the 2026–2027 season. Your support directly funds our journey from Canterbury to the World Championship.</p>
+    <div class="sponsor-tiers fade-up">
+      <div>
+        <div class="tier-label">// Title Partner</div>
+        <div class="sponsor-row">
+          <div class="sponsor-slot large">Your Logo Here</div>
+        </div>
+      </div>
+      <div>
+        <div class="tier-label">// Supporting Partners</div>
+        <div class="sponsor-row">
+          <div class="sponsor-slot medium">Partner</div>
+          <div class="sponsor-slot medium">Partner</div>
+          <div class="sponsor-slot medium">Partner</div>
+        </div>
+      </div>
+    </div>
+    <br><br>
+    <a href="#contact" class="btn-primary" style="margin-top:2rem;">Get In Touch</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="section-label">Get Involved</div>
+    <h2 class="section-title fade-up">Let's Talk</h2>
+    <p class="fade-up">Whether you're interested in partnering with us, following our journey, or just want to know more — we'd love to hear from you.</p>
+    <a href="mailto:team@teamexe.co.uk" class="contact-email fade-up">[team@teamexe.co.uk]</a>
+    <div class="socials fade-up">
+      <a href="#" class="social-link">Instagram</a>
+      <a href="#" class="social-link">TikTok</a>
+      <a href="#" class="social-link">YouTube</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">.exe_</div>
+  <div class="footer-note">Team .exe — Canterbury, Kent — VEX Robotics 2026–2027</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px';
+    ring.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '18px';
+      cursor.style.height = '18px';
+      ring.style.width = '56px';
+      ring.style.height = '56px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '10px';
+      cursor.style.height = '10px';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+    });
+  });
+
+  // Scroll animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Nav active state
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 200) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current
+        ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
