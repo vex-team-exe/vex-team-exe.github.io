@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='%230a0a0a'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-weight='700' font-size='24' fill='%2300e5ff'>.exe</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><circle cx='32' cy='32' r='32' fill='%230a0a0a'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-weight='700' font-size='24' fill='%2300e5ff'>.exe</text></svg>">
 <title>Team .exe — VEX Robotics</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -20,7 +20,7 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
 
   body {
     background: var(--black);
@@ -30,7 +30,7 @@
     cursor: none;
   }
 
-  /* Custom cursor */
+  /* Custom cursor — desktop only */
   .cursor {
     width: 10px; height: 10px;
     background: var(--accent);
@@ -52,6 +52,10 @@
     transform: translate(-50%, -50%);
     transition: left 0.12s ease-out, top 0.12s ease-out, width 0.2s, height 0.2s;
     opacity: 0.6;
+  }
+  @media (hover: none) {
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
   }
 
   /* Scrollbar */
@@ -130,12 +134,13 @@
     display: inline-block;
   }
   .hero-title {
-    font-size: clamp(4rem, 10vw, 9rem);
+    font-size: clamp(3rem, 10vw, 9rem);
     font-weight: 800;
     line-height: 0.92;
     letter-spacing: -0.03em;
     position: relative;
     z-index: 1;
+    word-break: break-word;
   }
   .hero-title .accent { color: var(--accent); }
   .hero-title .stroke {
@@ -287,6 +292,8 @@
     position: relative;
     overflow: hidden;
     transition: background 0.3s;
+    min-width: 0;
+    word-break: break-word;
   }
   .award-card:hover { background: #222; }
   .award-card::before {
@@ -573,16 +580,29 @@
   @media (max-width: 900px) {
     nav { padding: 1.2rem 2rem; }
     .nav-links { display: none; }
-    #hero { padding: 0 2rem 4rem; }
+    #hero { padding: 0 2rem 5rem; }
+    .hero-scroll-hint { display: none; }
     section { padding: 5rem 2rem; }
     .story-inner { grid-template-columns: 1fr; gap: 3rem; }
     .awards-grid { grid-template-columns: 1fr; }
+    .award-card { padding: 1.75rem; }
     .team-grid { grid-template-columns: 1fr 1fr; }
     .gallery-grid { grid-template-columns: 1fr 1fr; }
     .gallery-item.tall { grid-row: span 1; aspect-ratio: 4/3; }
     .timeline { flex-direction: column; gap: 3rem; }
     .timeline::before { display: none; }
     footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title { font-size: clamp(2.8rem, 14vw, 4rem); letter-spacing: -0.02em; }
+    .hero-sub { font-size: 0.92rem; }
+    .hero-cta { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .team-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .stat-row { gap: 1.5rem; flex-wrap: wrap; }
+    .section-title { font-size: clamp(1.8rem, 7vw, 2.5rem); }
+    .awards-grid { gap: 1px; }
   }
 </style>
 </head>
@@ -884,7 +904,7 @@
     <div class="section-label">Get Involved</div>
     <h2 class="section-title fade-up">Let's Talk</h2>
     <p class="fade-up">Whether you're interested in partnering with us, following our journey, or just want to know more — we'd love to hear from you.</p>
-    <a href="mailto:team@teamexe.co.uk" class="contact-email fade-up">[team@teamexe.co.uk]</a>
+    <a href="/cdn-cgi/l/email-protection#0f7b6a6e624f7b6a6e626a776a216c60217a64" class="contact-email fade-up">[<span class="__cf_email__" data-cfemail="5e2a3b3f331e2a3b3f333b263b703d31702b35">[email&#160;protected]</span>]</a>
     <div class="socials fade-up">
       <a href="#" class="social-link">Instagram</a>
       <a href="#" class="social-link">TikTok</a>
@@ -898,7 +918,7 @@
   <div class="footer-note">Team .exe — Canterbury, Kent — VEX Robotics 2026–2027</div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -938,12 +958,14 @@
   const navLinks = document.querySelectorAll('.nav-links a');
   window.addEventListener('scroll', () => {
     let current = '';
-    sections.forEach(s => {
-      if (window.scrollY >= s.offsetTop - 200) current = s.id;
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - 120;
+      if (window.scrollY >= sectionTop) current = section.getAttribute('id');
     });
-    navLinks.forEach(a => {
-      a.style.color = a.getAttribute('href') === '#' + current
-        ? 'var(--accent)' : '';
+    navLinks.forEach(link => {
+      link.style.color = link.getAttribute('href') === '#' + current
+        ? 'var(--accent)'
+        : 'rgba(244,242,238,0.5)';
     });
   });
 </script>
