@@ -55,7 +55,7 @@
   }
   @media (hover: none) {
     body { cursor: auto; }
-    .cursor, .cursor-ring { display: none; }
+    .cursor, .cursor-ring { display: none !important; }
   }
 
   /* Scrollbar */
@@ -134,7 +134,7 @@
     display: inline-block;
   }
   .hero-title {
-    font-size: clamp(3rem, 10vw, 9rem);
+    font-size: clamp(2.2rem, 10vw, 9rem);
     font-weight: 800;
     line-height: 0.92;
     letter-spacing: -0.03em;
@@ -146,6 +146,9 @@
   .hero-title .stroke {
     -webkit-text-stroke: 1.5px var(--white);
     color: transparent;
+    white-space: nowrap;
+    display: block;
+    font-size: clamp(1rem, 9.5vw, 9rem);
   }
   .hero-sub {
     margin-top: 2.5rem;
@@ -595,7 +598,7 @@
   }
 
   @media (max-width: 480px) {
-    .hero-title { font-size: clamp(2.8rem, 14vw, 4rem); letter-spacing: -0.02em; }
+    .hero-title { font-size: clamp(2rem, 9vw, 3rem); letter-spacing: -0.02em; }
     .hero-sub { font-size: 0.92rem; }
     .hero-cta { flex-direction: column; align-items: flex-start; gap: 1rem; }
     .team-grid { grid-template-columns: 1fr; }
@@ -681,22 +684,17 @@
       <h2 class="section-title">Awards & Achievements</h2>
     </div>
     <div class="awards-grid">
-      <div class="award-card award-highlight fade-up">
-        <div class="award-badge">Most Prestigious</div>
-        <h3>Regional Excellence Award</h3>
-        <p>The highest judged award in VEX, combining a top skills score, exemplary Engineering Notebook, and elite tournament performance.</p>
-      </div>
       <div class="award-card fade-up">
         <div class="award-badge">×3 Won</div>
         <h3>Tournament Champion</h3>
         <p>Awarded for winning all stages of a regional tournament — won three times across our history.</p>
       </div>
-      <div class="award-card fade-up">
+      <div class="award-card award-highlight fade-up">
         <div class="award-badge">National</div>
         <h3>Build Award</h3>
         <p>Recognising a robust, well-engineered robot built to perform under the rigours of national competition.</p>
       </div>
-      <div class="award-card fade-up">
+      <div class="award-card award-highlight fade-up">
         <div class="award-badge">National</div>
         <h3>Create Award</h3>
         <p>For a thoroughly researched design process that draws on real-world engineering principles and examples.</p>
@@ -710,6 +708,11 @@
         <div class="award-badge">Regional</div>
         <h3>Innovate Award</h3>
         <p>For a uniquely creative and technically impressive robot design that stood out among the field.</p>
+      </div>
+      <div class="award-card fade-up">
+        <div class="award-badge">Regional</div>
+        <h3>Robot Skills</h3>
+        <p>Ranked among the top robot skills scores at regional level, combining autonomous and driver-control performance.</p>
       </div>
     </div>
   </div>
@@ -919,29 +922,36 @@
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Custom cursor
+  // Custom cursor — hide on touch devices
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    ring.style.left = e.clientX + 'px';
-    ring.style.top = e.clientY + 'px';
-  });
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.width = '18px';
-      cursor.style.height = '18px';
-      ring.style.width = '56px';
-      ring.style.height = '56px';
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (isTouchDevice) {
+    cursor.style.display = 'none';
+    ring.style.display = 'none';
+    document.body.style.cursor = 'auto';
+  } else {
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
     });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.width = '10px';
-      cursor.style.height = '10px';
-      ring.style.width = '36px';
-      ring.style.height = '36px';
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width = '18px';
+        cursor.style.height = '18px';
+        ring.style.width = '56px';
+        ring.style.height = '56px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width = '10px';
+        cursor.style.height = '10px';
+        ring.style.width = '36px';
+        ring.style.height = '36px';
+      });
     });
-  });
+  }
 
   // Scroll animations
   const observer = new IntersectionObserver(entries => {
