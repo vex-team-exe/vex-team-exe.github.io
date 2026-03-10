@@ -455,29 +455,38 @@
 
   /* GALLERY */
   #gallery { background: var(--black); }
-  .gallery-inner { max-width: 1200px; margin: 0 auto; }
-  .gallery-header { margin-bottom: 3rem; }
-  .gallery-grid {
+  -inner { max-width: 1200px; margin: 0 auto; }
+  -header { margin-bottom: 3rem; }
+  -grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: auto auto;
     gap: 2px;
     background: var(--border);
   }
-  .gallery-item {
+  -item {
     background: #111;
+    aspect-ratio: 4/3;
+    position: relative;
+    overflow: hidden;
+  }
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .gallery-item:hover img { transform: scale(1.03); }
+  .gallery-item.tall { grid-row: span 2; aspect-ratio: unset; }
+  .gallery-item.placeholder {
     display: flex; align-items: center; justify-content: center;
     flex-direction: column; gap: 0.5rem;
     color: rgba(244,242,238,0.15);
     font-family: var(--mono); font-size: 0.65rem;
     letter-spacing: 0.08em;
-    aspect-ratio: 4/3;
-    position: relative;
-    overflow: hidden;
-    transition: background 0.3s;
   }
-  .gallery-item:hover { background: #161616; }
-  .gallery-item.tall { grid-row: span 2; aspect-ratio: unset; }
   .gallery-item::before {
     content: '';
     position: absolute; inset: 0;
@@ -852,29 +861,27 @@
     </div>
     <div class="gallery-grid fade-up">
       <div class="gallery-item tall">
-        <div class="img-icon">⬡</div>
-        <span>ROBOT HERO SHOT</span>
-        <img src="season2526_both_robots.jpg">
+        <img src="season2526_both_robots.jpg" alt="Both robots">
       </div>
-      <div class="gallery-item">
+      <div class="gallery-item placeholder">
         <div class="img-icon">◻</div>
         <span>PIT DISPLAY</span>
       </div>
-      <div class="gallery-item">
+      <div class="gallery-item placeholder">
         <div class="img-icon">◻</div>
         <span>TEAM AT COMP</span>
       </div>
       <div class="gallery-item">
-        <img src="season2526_23218X_robot.jpg">
+        <img src="season2526_23218X_robot.jpg" alt="23218X Robot from 25-26">
       </div>
       <div class="gallery-item">
-        <img src="season2526_23218Y_robot.jpg">
+        <img src="season2526_23218Y_robot.jpg" alt="23218Y Robot from 25-26">
       </div>
       <div class="gallery-item">
-        <img src="season2526_team_score.jpg">
+        <img src="season2526_team_score.jpg" alt="Team members at field from 25-26">
       </div>
       <div class="gallery-item">
-        <img src="season2526_team_match.jpg">
+        <img src="season2526_team_match.jpg" alt="Team members at field from 25-26">
       </div>
     </div>
   </div>
