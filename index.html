@@ -492,6 +492,21 @@
     position: absolute; inset: 0;
     background: linear-gradient(135deg, rgba(0,229,255,0.02) 0%, transparent 60%);
   }
+  .gallery-item .caption {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.55);
+    color: rgba(255,255,255,0.85);
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    padding: 4px 8px;
+    border-radius: 6px;
+    pointer-events: none;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+  }
 
   /* SPONSORS */
   #sponsors { background: var(--mid); border-top: 1px solid var(--border); }
@@ -861,19 +876,24 @@
     </div>
     <div class="gallery-grid fade-up">
       <div class="gallery-item tall">
-        <img src="season2526_both_robots.jpg" alt="Both robots">
+        <img src="season2526_both_robots.jpg">
+        <span class="caption">Both robots from 25-26</span>
       </div>
       <div class="gallery-item fade-up">
-        <img src="season2526_23218X_robot.jpg" alt="23218X Robot from 25-26">
+        <img src="season2526_23218X_robot.jpg">
+        <span class="caption">23218X Robot from 25-26</span>
       </div>
       <div class="gallery-item fade-up">
-        <img src="season2526_23218Y_robot.jpg" alt="23218Y Robot from 25-26">
+        <img src="season2526_23218Y_robot.jpg">
+        <span class="caption">23218Y Robot from 25-26</span>
       </div>
       <div class="gallery-item fade-up">
-        <img src="season2526_team_score.jpg" alt="Team members at field from 25-26">
+        <img src="season2526_team_score.jpg">
+        <span class="caption">Team members at field from 25-26</span>
       </div>
       <div class="gallery-item fade-up">
-        <img src="season2425_team_match.jpg" alt="Team members at field from 25-26">
+        <img src="season2425_team_match.jpg">
+        <span class="caption">Team members at field from 25-26</span>
       </div>
     </div>
   </div>
