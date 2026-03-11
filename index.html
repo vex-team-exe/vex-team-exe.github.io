@@ -482,14 +482,15 @@
 .gallery-item.tall {
   grid-row: span 2;
   aspect-ratio: unset;
-  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 .gallery-item.tall img {
   width: 100%;
-  height: auto;
-  object-fit: unset;
-  display: block;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 .gallery-item.placeholder {
   display: flex; align-items: center; justify-content: center;
