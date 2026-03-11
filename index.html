@@ -250,6 +250,15 @@
     position: absolute; inset: 0;
     background: linear-gradient(135deg, rgba(0,229,255,0.03) 0%, transparent 60%);
   }
+  .story-img {
+    position: relative;
+    overflow: hidden;
+  }
+  .story-img img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
   .img-icon { font-size: 2rem; opacity: 0.3; }
   .story-text { display: flex; flex-direction: column; gap: 1.5rem; }
   .story-text p {
@@ -672,9 +681,7 @@
 <!-- STORY -->
 <section id="story">
   <div class="story-inner">
-    <div class="story-img-placeholder fade-up">
-      <div class="img-icon">⬡</div>
-      <span>TEAM PHOTO</span>
+    <div class="story-img fade-up">
       <img src="team_photo.jpg">
     </div>
     <div class="story-text fade-up">
