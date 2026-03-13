@@ -80,6 +80,18 @@
     letter-spacing: 0.05em;
 		text-decoration: none;
   }
+	.nav-logo-link {text-decoration: none; display: flex; gap: 2.5rem; list-style: none;}
+	.nav-logo-link a {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: rgba(244,242,238,0.5);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-logo-link a:hover { color: var(--accent); }
+	
   .nav-links { text-decoration: none; display: flex; gap: 2.5rem; list-style: none; }
   .nav-links a {
     font-family: var(--mono);
@@ -681,7 +693,7 @@
 <div class="cursor-ring" id="cursorRing"></div>
 
 <nav>
-  <a href="#hero" class="nav-links"><div class="nav-logo">.exe</div></a>
+  <a href="#hero" class="nav-logo-link"><div class="nav-logo">.exe</div></a>
   <ul class="nav-links">
     <li><a href="#story">Story</a></li>
     <li><a href="#achievements">Achievements</a></li>
